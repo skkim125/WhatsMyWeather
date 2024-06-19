@@ -89,10 +89,32 @@ class ViewController: UIViewController {
         view.layer.contents = #imageLiteral(resourceName: "gradationImg").cgImage
         locationManager.delegate = self
         
-        
+        configureNavigationBar()
         configureHierarchy()
         checkDeviceLocationAuthorization()
         configureLayout()
+    }
+    
+    func configureNavigationBar() {
+        navigationItem.title = "What's My Weather"
+        let currentButton = UIBarButtonItem(image: UIImage(systemName: "location.fill"), style: .plain, target: self, action: #selector(refreshButtonClicked))
+        currentButton.tintColor = .purple
+        navigationItem.rightBarButtonItem = currentButton
+    }
+    
+    @objc func refreshButtonClicked() {
+        let alert = UIAlertController(title: "새로 고침", message: "새로고침하시겠습니까?", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        let open = UIAlertAction(title: "네", style: .default) { _ in
+            self.locationManager.startUpdatingLocation()
+            self.weatherDetailInfoCollectionView.reloadData()
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(open)
+        
+        // 4) 알럿 표시하기
+        present(alert, animated: true)
     }
     
     func configureHierarchy() {
@@ -144,7 +166,6 @@ class ViewController: UIViewController {
         let url = URL(string: weatherImage)!
         weatherImageView.kf.setImage(with: url)
         weatherImageView.contentMode = .scaleAspectFit
-        
         
         if let w = weather.weather.first {
             whatsWeatherLabel.text = w.description
@@ -207,7 +228,7 @@ class ViewController: UIViewController {
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.requestWhenInUseAuthorization()
         case .denied:
-            print("")
+            callRequest(lat: 37.517742, lon: 126.886463)
         case .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
         default:
