@@ -19,6 +19,8 @@
 		047A94072C22A3BE0057F3AE /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 047A94062C22A3BE0057F3AE /* Kingfisher */; };
 		047A940A2C22A3C60057F3AE /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 047A94092C22A3C60057F3AE /* Alamofire */; };
 		047A94112C22C3F60057F3AE /* KCC_Hanbit.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 047A94102C22C3F60057F3AE /* KCC_Hanbit.ttf */; };
+		047A941A2C22F9160057F3AE /* WeatherDetailInfoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A94192C22F9160057F3AE /* WeatherDetailInfoCollectionViewCell.swift */; };
+		047A941C2C22FE270057F3AE /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047A941B2C22FE270057F3AE /* Enum.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		047A93FE2C229FD90057F3AE /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		047A94002C22A0D10057F3AE /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		047A94102C22C3F60057F3AE /* KCC_Hanbit.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = KCC_Hanbit.ttf; sourceTree = "<group>"; };
+		047A94192C22F9160057F3AE /* WeatherDetailInfoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailInfoCollectionViewCell.swift; sourceTree = "<group>"; };
+		047A941B2C22FE270057F3AE /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 				047A93E82C229EF00057F3AE /* AppDelegate.swift */,
 				047A93EA2C229EF00057F3AE /* SceneDelegate.swift */,
 				047A93EC2C229EF00057F3AE /* ViewController.swift */,
+				047A94192C22F9160057F3AE /* WeatherDetailInfoCollectionViewCell.swift */,
+				047A941B2C22FE270057F3AE /* Enum.swift */,
 				047A93FE2C229FD90057F3AE /* APIKey.swift */,
 				047A94002C22A0D10057F3AE /* Weather.swift */,
 				047A93F12C229EF20057F3AE /* Assets.xcassets */,
@@ -174,7 +180,9 @@
 			files = (
 				047A93ED2C229EF00057F3AE /* ViewController.swift in Sources */,
 				047A93E92C229EF00057F3AE /* AppDelegate.swift in Sources */,
+				047A941A2C22F9160057F3AE /* WeatherDetailInfoCollectionViewCell.swift in Sources */,
 				047A93FF2C229FD90057F3AE /* APIKey.swift in Sources */,
+				047A941C2C22FE270057F3AE /* Enum.swift in Sources */,
 				047A93EB2C229EF00057F3AE /* SceneDelegate.swift in Sources */,
 				047A94012C22A0D10057F3AE /* Weather.swift in Sources */,
 			);

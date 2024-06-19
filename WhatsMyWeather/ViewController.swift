@@ -15,6 +15,14 @@ class ViewController: UIViewController {
     let locationManager = CLLocationManager()
     var openWeather: OpenWeather?
     
+    lazy var mapPinImageView = {
+       let imgView = UIImageView(image: UIImage(systemName: "location.circle.fill"))
+        imgView.tintColor = .purple
+        imgView.contentMode = .scaleAspectFit
+        
+        return imgView
+    }()
+    
     var weatherImage: String {
         guard let ow = self.openWeather else {
             return ""
@@ -35,7 +43,6 @@ class ViewController: UIViewController {
         sv.axis = .vertical
         sv.spacing = 0
         sv.layer.cornerRadius = 12
-//        sv.backgroundColor = .white.withAlphaComponent(0.3)
         
         return sv
     }()
@@ -44,14 +51,37 @@ class ViewController: UIViewController {
        let imgView = UIImageView()
         imgView.backgroundColor = .white
         imgView.layer.cornerRadius = 12
-        imgView.clipsToBounds = true
         
         return imgView
     }()
     
-    
     lazy var whatsWeatherLabel = UILabel()
-
+    lazy var weatherDetailInfoCollectionView = {
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout())
+        cv.delegate = self
+        cv.dataSource = self
+        cv.register(WeatherDetailInfoCollectionViewCell.self, forCellWithReuseIdentifier: WeatherDetailInfoCollectionViewCell.id)
+        cv.isScrollEnabled = false
+        cv.layer.cornerRadius = 12
+        cv.backgroundColor = .white.withAlphaComponent(0.3)
+        cv.showsHorizontalScrollIndicator = false
+        
+        return cv
+    }()
+    
+    func collectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let cellSpacing: CGFloat = 10
+        let sectionSpacing: CGFloat = 10
+        let width = UIScreen.main.bounds.width - (sectionSpacing*6 + cellSpacing*2)
+        
+        layout.itemSize = CGSize(width: width/3, height: width/3)
+        layout.minimumLineSpacing = cellSpacing
+        layout.minimumInteritemSpacing = cellSpacing
+        layout.sectionInset = .init(top: sectionSpacing, left: cellSpacing, bottom: sectionSpacing, right: cellSpacing)
+        
+        return layout
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,22 +98,23 @@ class ViewController: UIViewController {
     func configureHierarchy() {
         view.addSubview(myLocationLabel)
         view.addSubview(weatherInfoStackView)
+        view.addSubview(weatherDetailInfoCollectionView)
+        view.addSubview(mapPinImageView)
     }
-    
     
     func configureLayout() {
         
         weatherInfoStackView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
-            make.top.equalTo(myLocationLabel).offset(40)
+            make.top.equalTo(myLocationLabel).offset(20)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(60)
-            make.height.equalTo(200)
+            make.height.equalTo(220)
         }
         
         weatherImageView.snp.makeConstraints { make in
             make.centerX.equalTo(view)
             make.top.equalTo(weatherInfoStackView.snp.top).inset(20)
-            make.horizontalEdges.equalTo(weatherInfoStackView.snp.horizontalEdges).inset(80)
+            make.horizontalEdges.equalTo(weatherInfoStackView.snp.horizontalEdges).inset(60)
             make.height.equalTo(weatherImageView.snp.width)
         }
         
@@ -94,9 +125,15 @@ class ViewController: UIViewController {
         }
         
         myLocationLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
             make.height.equalTo(30)
             make.horizontalEdges.equalTo(weatherInfoStackView.snp.horizontalEdges)
+        }
+        
+        weatherDetailInfoCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(weatherInfoStackView.snp.bottom).offset(60)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(weatherDetailInfoCollectionView.snp.width).multipliedBy(0.68)
         }
     }
     
@@ -113,7 +150,7 @@ class ViewController: UIViewController {
             whatsWeatherLabel.text = w.description
             whatsWeatherLabel.textColor = .darkGray
             whatsWeatherLabel.textAlignment = .center
-            whatsWeatherLabel.font = UIFont.hanbit!
+            whatsWeatherLabel.font = UIFont.hanbit!.withSize(24)
         }
     }
     
@@ -139,6 +176,8 @@ class ViewController: UIViewController {
                 if let ow = self.openWeather {
                     self.configureUI(weather: ow)
                 }
+                
+                self.weatherDetailInfoCollectionView.reloadData()
                 
             case .failure(let error):
                 print(error)
@@ -174,6 +213,24 @@ class ViewController: UIViewController {
         default:
             print(status)
         }
+    }
+}
+
+extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return WeatherDetail.allCases.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherDetailInfoCollectionViewCell.id, for: indexPath) as! WeatherDetailInfoCollectionViewCell
+        
+        if let weather = openWeather {
+            cell.configureCellUI(detail: WeatherDetail.allCases[indexPath.item], weatherValue: weather)
+        }
+        
+        cell.isSelected = false
+        
+        return cell
     }
 }
 
