@@ -103,18 +103,40 @@ class ViewController: UIViewController {
     }
     
     @objc func refreshButtonClicked() {
-        let alert = UIAlertController(title: "새로 고침", message: "새로고침하시겠습니까?", preferredStyle: .alert)
-        let cancel = UIAlertAction(title: "취소", style: .cancel)
-        let open = UIAlertAction(title: "네", style: .default) { _ in
-            self.locationManager.startUpdatingLocation()
-            self.weatherDetailInfoCollectionView.reloadData()
+        var status: CLAuthorizationStatus
+        
+        if #available(iOS 14, *) {
+            status = locationManager.authorizationStatus
+        } else {
+            status = CLLocationManager.authorizationStatus()
         }
         
-        alert.addAction(cancel)
-        alert.addAction(open)
+        switch status {
+        case .denied:
+            let alert = UIAlertController(title: "설정에서 위치 권한 사용에 대하여 허용해주세요", message: nil, preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            let open = UIAlertAction(title: "이동", style: .default)
+            
+            alert.addAction(cancel)
+            alert.addAction(open)
+            
+            present(alert, animated: true)
+        case .authorizedWhenInUse:
+            let alert = UIAlertController(title: "새로 고침", message: "새로고침하시겠습니까?", preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            let open = UIAlertAction(title: "네", style: .default) { _ in
+                self.locationManager.startUpdatingLocation()
+                self.weatherDetailInfoCollectionView.reloadData()
+            }
+            
+            alert.addAction(cancel)
+            alert.addAction(open)
+            
+            present(alert, animated: true)
+        default:
+            print("")
+        }
         
-        // 4) 알럿 표시하기
-        present(alert, animated: true)
     }
     
     func configureHierarchy() {
@@ -210,7 +232,15 @@ class ViewController: UIViewController {
         if CLLocationManager.locationServicesEnabled() {
             checkUserCurrentLocationAuthorization()
         } else {
-            print("디바이스 위치 권한을 허용해주세요")
+            let alert = UIAlertController(title: "설정에서 위치 권한 사용에 대하여 허용해주세요", message: nil, preferredStyle: .alert)
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            let open = UIAlertAction(title: "이동", style: .default)
+            
+            alert.addAction(cancel)
+            alert.addAction(open)
+            
+            // 4) 알럿 표시하기
+            present(alert, animated: true)
         }
     }
     
